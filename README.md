@@ -19,3 +19,5 @@ Comprehensive design palettes (monochromatic, complementary, analogous, triadic)
 
 **Color Analysis:**
 
+**Skin Color Detection**
+
