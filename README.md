@@ -16,3 +16,5 @@ Recommendations for foundation, blush, lipstick, and eyeshadow based on color th
 
 **design_palettes.csv:**
 Comprehensive design palettes (monochromatic, complementary, analogous, triadic) for artistic and UI/UX use.
+
+**Color Analysis**
