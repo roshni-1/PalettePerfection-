@@ -42,6 +42,9 @@ This project aims to create a user-friendly application that detects the user's 
 - **Improve Skin Tone Detection**: Implement a deep learning model for more accurate face and skin tone detection.
 - **Seasonal Recommendations Based on User Data**: Instead of static recommendations, provide more dynamic and personalized suggestions.
 - **Interactive User Feedback**: Add a feedback system where users can provide input on the accuracy of the recommendations, which can be used to improve the model.
+
+![image](https://github.com/user-attachments/assets/519344df-30ad-4c26-8b8f-0fc9aad13f23)
+
 - **Virtual Try-On**: Implement an AR-based feature for users to virtually try on clothing and makeup colors.
 
 This project is intended to provide accessible solution for users to find personalized fashion and makeup color suggestions. It combines machine learning, image processing, and color theory to make the process intuitive and engaging.
