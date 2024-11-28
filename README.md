@@ -1,7 +1,7 @@
 # Overview of the Skin Tone Detection and Color Recommendations Project
 
 ### Project Summary
-This project aims to create a user-friendly application that detects the user's skin tone and provides personalized recommendations for makeup and clothing colors. The application uses machine learning, color theory, and advanced image processing techniques to ensure accurate color suggestions, tailored for different skin tones and seasonal preferences.
+This project aims to create a user-friendly application that detects the user's skin tone and provides personalized recommendations for makeup and clothing colors. The application uses machine learning, color theory, and advanced image processing techniques to ensure accurate color suggestions, tailored for different skin tones and seasonal preferences.. 
 
 ### Features Implemented
 1. **Skin Tone Detection**:
