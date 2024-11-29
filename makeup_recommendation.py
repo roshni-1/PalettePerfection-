@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image
 import tempfile
 
-# Load Haar cascade for face detection
+# Loading Haar cascade for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 # Makeup recommendations database (updated with foundation colors based on RGB guidelines)
@@ -128,7 +128,7 @@ makeup_recommendations = {
 }
 
 def determine_skin_category(avg_color):
-    """Determine the skin category based on the average color."""
+    """Determining skin category based on average color."""
     r, g, b = avg_color
     if r > 200 and g > 180 and b > 170:
         return "fair"
@@ -142,7 +142,7 @@ def determine_skin_category(avg_color):
         return "deep"
 
 def find_most_relevant_shade(shades, target_color):
-    """Find the most relevant shade by calculating the Euclidean distance to the target color."""
+    """Finding the most relevant shade by calculating Euclidean distance to the target color."""
     min_distance = float('inf')
     best_shade = None
     for shade in shades:
