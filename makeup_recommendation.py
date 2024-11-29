@@ -172,25 +172,25 @@ def extract_dominant_skin_tone(image):
         # Extract the face region
         face_roi = frame[y:y + h, x:x + w]
         
-        # Convert the face region to HSV color space
+        # Converting face region to HSV color space
         hsv = cv2.cvtColor(face_roi, cv2.COLOR_BGR2HSV)
         
-        # Define skin color range in HSV
+        # Defining skin color range in HSV
         lower_skin = np.array([0, 10, 60], dtype=np.uint8)
         upper_skin = np.array([20, 150, 255], dtype=np.uint8)
         
-        # Create a mask for skin detection
+        # Creating mask for skin detection
         mask = cv2.inRange(hsv, lower_skin, upper_skin)
         
-        # Apply the mask to extract skin pixels
+        # Applying mask to extract skin pixels
         skin_pixels = cv2.bitwise_and(face_roi, face_roi, mask=mask)
         
-        # Reshape the skin region into a 2D array of RGB values
+        # Reshaping the skin region into a 2D array of RGB values
         reshaped_skin = skin_pixels.reshape((-1, 3))
         reshaped_skin = reshaped_skin[~np.all(reshaped_skin == 0, axis=1)]  # Remove black pixels
         
-        if len(reshaped_skin) > 0:  # Ensure there are enough skin pixels
-            # Apply K-means clustering to find the dominant skin tone
+        if len(reshaped_skin) > 0:  # Ensuring there are enough skin pixels
+            # Applying K-means clustering to find dominant skin tone
             kmeans = KMeans(n_clusters=1, random_state=0)
             kmeans.fit(reshaped_skin)
             dominant_color = kmeans.cluster_centers_[0].astype(int)
