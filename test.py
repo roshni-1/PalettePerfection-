@@ -6,7 +6,7 @@ from webcolors import rgb_to_name, rgb_to_hex
 import streamlit as st
 import random
 
-# Load Haar cascade for face detection
+# Loading Haar cascade for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 # Variables for dominant skin tone and thresholding
