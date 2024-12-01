@@ -7,18 +7,18 @@ from webcolors import rgb_to_name, rgb_to_hex
 import streamlit as st
 import random
 
-# Load Haar cascade for face detection
+# Loading Haar cascade for face detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-# Load the expanded skin tone dataset
+# Loading expanded skin tone dataset
 dataset_path = 'expanded_skin_tone_dataset.csv'
 skin_tone_df = pd.read_csv(dataset_path)
 
-# Extract skin tone RGB values and names
+# Extracting skin tone RGB values and names
 skin_tone_rgb_values = skin_tone_df['RGB_Value'].apply(lambda x: eval(x) if isinstance(x, str) else x).tolist()
 skin_tone_names = skin_tone_df['Skin_Tone_Name'].tolist()
 
-# Load the makeup dataset
+# Loading the makeup dataset
 makeup_dataset_path = 'makeup_dataset.csv'
 makeup_df = pd.read_csv(makeup_dataset_path)
 
