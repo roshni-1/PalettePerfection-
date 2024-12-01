@@ -45,6 +45,12 @@ This project aims to create a user-friendly application that detects the user's 
 
 ![image](https://github.com/user-attachments/assets/519344df-30ad-4c26-8b8f-0fc9aad13f23)
 
+![image](https://github.com/user-attachments/assets/ac00fe8e-fe32-447e-a0b2-6fb0f9844c6e)  
+![image](https://github.com/user-attachments/assets/67a4b3c4-ef2e-420c-a800-4b5171378909)
+![image](https://github.com/user-attachments/assets/5a8f2f03-4f36-42f0-ba78-505219bcff90)
+
+
+
 - **Virtual Try-On**: Implement an AR-based feature for users to virtually try on clothing and makeup colors.
 
 This project is intended to provide accessible solution for users to find personalized fashion and makeup color suggestions. It combines machine learning, image processing, and color theory to make the process intuitive and engaging.
