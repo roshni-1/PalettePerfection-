@@ -7,7 +7,7 @@ from colorsys import rgb_to_hsv, hsv_to_rgb
 import streamlit as st
 import random
 
-# Load Skin Tone Dataset
+# Loading Skin Tone Dataset
 skin_tone_file = "skintonedetailed.xlsx"
 skin_tone_data = pd.read_excel(skin_tone_file)
 
@@ -16,7 +16,7 @@ skin_tone_data['R'], skin_tone_data['G'], skin_tone_data['B'] = zip(
 )
 skin_tone_data['Hex_Value'] = skin_tone_data['Hex_Value'].str.strip()
 
-# Load Makeup Dataset
+# Loading Makeup Dataset
 makeup_file = "makeupdetailed.csv"
 makeup_data = pd.read_csv(makeup_file)
 
@@ -24,7 +24,7 @@ makeup_data['R'], makeup_data['G'], makeup_data['B'] = zip(
     *makeup_data['RGB_Value'].str.strip('()').str.split(',').apply(lambda x: map(int, x))
 )
 
-# Seasonal Palette Rules
+# Defining Seasonal Palette Rules(based on color theory)
 seasonal_palette_rules = {
     "Spring": {"hue_shift": 10, "saturation_factor": 1.2, "brightness_factor": 1.1},
     "Summer": {"hue_shift": -10, "saturation_factor": 0.9, "brightness_factor": 1.0},
