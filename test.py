@@ -1,190 +1,112 @@
 import cv2
+import mediapipe as mp
 import numpy as np
 import pandas as pd
-from sklearn.cluster import KMeans
+from sklearn.metrics.pairwise import euclidean_distances
 from colorsys import rgb_to_hsv, hsv_to_rgb
-from webcolors import rgb_to_name, rgb_to_hex
 import streamlit as st
 import random
 
-# Loading Haar cascade for face detection
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+# Load Skin Tone Dataset
+skin_tone_file = "skintonedetailed.xlsx"
+skin_tone_data = pd.read_excel(skin_tone_file)
 
-# Loading expanded skin tone dataset
-dataset_path = 'expanded_skin_tone_dataset.csv'
-skin_tone_df = pd.read_csv(dataset_path)
+skin_tone_data['R'], skin_tone_data['G'], skin_tone_data['B'] = zip(
+    *skin_tone_data['RGB_Values'].str.split(',').apply(lambda x: map(int, x))
+)
+skin_tone_data['Hex_Value'] = skin_tone_data['Hex_Value'].str.strip()
 
-# Extracting skin tone RGB values and names
-skin_tone_rgb_values = skin_tone_df['RGB_Value'].apply(lambda x: eval(x) if isinstance(x, str) else x).tolist()
-skin_tone_names = skin_tone_df['Skin_Tone_Name'].tolist()
+# Load Makeup Dataset
+makeup_file = "makeupdetailed.csv"
+makeup_data = pd.read_csv(makeup_file)
 
-# Loading the makeup dataset
-makeup_dataset_path = 'makeup_dataset.csv'
-makeup_df = pd.read_csv(makeup_dataset_path)
+makeup_data['R'], makeup_data['G'], makeup_data['B'] = zip(
+    *makeup_data['RGB_Value'].str.strip('()').str.split(',').apply(lambda x: map(int, x))
+)
 
-# Variables for dominant skin tone and thresholding
-fixed_skin_tone = None  # Fixed dominant tone
-change_threshold = 20  # Large threshold for extreme changes
-last_dominant_color = None
-skin_tone_buffer = []  # Buffer for smoothing
-buffer_size = 5
+# Seasonal Palette Rules
+seasonal_palette_rules = {
+    "Spring": {"hue_shift": 10, "saturation_factor": 1.2, "brightness_factor": 1.1},
+    "Summer": {"hue_shift": -10, "saturation_factor": 0.9, "brightness_factor": 1.0},
+    "Autumn": {"hue_shift": -5, "saturation_factor": 1.1, "brightness_factor": 0.9},
+    "Winter": {"hue_shift": -20, "saturation_factor": 1.0, "brightness_factor": 1.2},
+}
 
-# Function to calculate color difference
-def color_difference(color1, color2):
-    return np.linalg.norm(np.array(color1) - np.array(color2))
+# Utility Functions
+def find_closest_skin_tone(detected_rgb):
+    """Find the closest matching skin tone from the dataset."""
+    distances = euclidean_distances([detected_rgb], skin_tone_data[['R', 'G', 'B']])
+    closest_index = np.argmin(distances)
+    closest_tone = skin_tone_data.iloc[closest_index]
+    return closest_tone, round(100 - distances[0][closest_index], 2)
 
-# Function to get the closest color name
-def get_closest_skin_tone(detected_rgb):
-    min_diff = float('inf')
-    closest_tone_name = None
-    closest_rgb = None
-    
-    for i, rgb in enumerate(skin_tone_rgb_values):
-        diff = color_difference(detected_rgb, rgb)
-        if diff < min_diff:
-            min_diff = diff
-            closest_tone_name = skin_tone_names[i]
-            closest_rgb = rgb
-    
-    return closest_tone_name, closest_rgb
 
-# Function to smooth the detected skin tone
-def smooth_skin_tone(detected_color):
-    global skin_tone_buffer
-    skin_tone_buffer.append(detected_color)
-    if len(skin_tone_buffer) > buffer_size:
-        skin_tone_buffer.pop(0)
-    smoothed_color = np.mean(skin_tone_buffer, axis=0).astype(int)
-    return smoothed_color
+def detect_skin_tone_with_landmarks(image):
+    """Detect skin tone using Mediapipe face landmarks."""
+    mp_face_mesh = mp.solutions.face_mesh
+    face_mesh = mp_face_mesh.FaceMesh(static_image_mode=True, refine_landmarks=True)
 
-# Function to detect dominant skin tone
-def detect_skin_tone(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(100, 100))
+    results = face_mesh.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    if not results.multi_face_landmarks:
+        return None
 
-    for (x, y, w, h) in faces:
-        face_roi = frame[y:y + h, x:x + w]
-        hsv = cv2.cvtColor(face_roi, cv2.COLOR_BGR2HSV)
-        lower_skin = np.array([0, 20, 70], dtype=np.uint8)
-        upper_skin = np.array([35, 180, 255], dtype=np.uint8)
-        mask = cv2.inRange(hsv, lower_skin, upper_skin)
-        skin_pixels = cv2.bitwise_and(face_roi, face_roi, mask=mask)
-        reshaped_skin = skin_pixels.reshape((-1, 3))
-        reshaped_skin = reshaped_skin[~np.all(reshaped_skin == 0, axis=1)]
+    # Extract key landmarks for forehead, cheeks, and chin
+    skin_regions = []
+    for face_landmarks in results.multi_face_landmarks:
+        landmark_indices = [10, 338, 297, 332, 284]
+        for idx in landmark_indices:
+            x = int(face_landmarks.landmark[idx].x * image.shape[1])
+            y = int(face_landmarks.landmark[idx].y * image.shape[0])
+            skin_regions.append(image[y, x])
 
-        if len(reshaped_skin) > 100:
-            kmeans = KMeans(n_clusters=3, random_state=0)
-            kmeans.fit(reshaped_skin)
-            dominant_color = np.mean(kmeans.cluster_centers_, axis=0).astype(int)
-            smoothed_color = smooth_skin_tone(dominant_color)
-            closest_tone_name, closest_rgb = get_closest_skin_tone(smoothed_color)
-            return closest_tone_name, closest_rgb
+    if not skin_regions:
+        return None
 
-    return None, None
+    # Calculate median RGB
+    skin_regions = np.array(skin_regions)
+    dominant_color = np.median(skin_regions, axis=0).astype(int)
+    return dominant_color
 
-# Function to generate color palettes from a color wheel
-def generate_palette_from_wheel(rgb, scheme="complementary", num_colors=10, min_diff=40):
-    r, g, b = [x / 255.0 for x in rgb]
-    h, s, v = rgb_to_hsv(r, g, b)
 
-    palettes = []
-    used_colors = set()
-    for i in range(num_colors * 10):
-        if scheme == "complementary":
-            new_h = (h + 0.5 + random.uniform(-0.1, 0.1)) % 1.0
-        elif scheme == "analogous":
-            new_h = (h + random.uniform(-0.2, 0.2)) % 1.0
-        elif scheme == "triadic":
-            new_h = (h + (i % 3) * 0.333 + random.uniform(-0.1, 0.1)) % 1.0
-        else:
-            new_h = (h + random.uniform(-0.15, 0.15)) % 1.0
+def generate_diverse_palette(base_rgb, season_rules, num_colors=10):
+    """Generate a diverse seasonal color palette."""
+    base_h, base_s, base_v = rgb_to_hsv(*[x / 255.0 for x in base_rgb])
+    hue_shift = season_rules["hue_shift"] / 360.0
+    saturation_factor = season_rules["saturation_factor"]
+    brightness_factor = season_rules["brightness_factor"]
 
-        new_color = tuple(int(x * 255) for x in hsv_to_rgb(new_h, min(max(s + random.uniform(-0.1, 0.1), 0), 1), min(max(v + random.uniform(-0.1, 0.1), 0), 1)))
-        if all(color_difference(new_color, existing_color) > min_diff for existing_color in used_colors):
-            used_colors.add(new_color)
-            palettes.append(new_color)
-        if len(palettes) >= num_colors:
-            break
+    palette = []
+    used_hues = set()
 
-    return palettes
+    while len(palette) < num_colors:
+        h = (base_h + hue_shift + random.uniform(-0.6, 0.6)) % 1.0
+        s = min(max(base_s * saturation_factor + random.uniform(-0.3, 0.3), 0.4), 1.0)
+        v = min(max(base_v * brightness_factor + random.uniform(-0.3, 0.3), 0.4), 1.0)
+        color = tuple(int(c * 255) for c in hsv_to_rgb(h, s, v))
 
-# Function to get seasonal color palette based on skin tone
-def get_seasonal_palette(skin_tone_rgb, season):
-    r, g, b = [x / 255.0 for x in skin_tone_rgb]
-    h, s, v = rgb_to_hsv(r, g, b)
-    palettes = []
+        if h not in used_hues and all(np.linalg.norm(np.array(color) - np.array(existing_color)) > 75 for existing_color in palette):
+            palette.append(color)
+            used_hues.add(h)
 
-    if season == "Light Spring":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "analogous", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "complementary", num_colors=10))
-    elif season == "True Spring":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "analogous", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "triadic", num_colors=10))
-    elif season == "Warm Spring":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "complementary", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "analogous", num_colors=10))
-    elif season == "Light Summer":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "analogous", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "complementary", num_colors=10))
-    elif season == "True Summer":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "complementary", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "triadic", num_colors=10))
-    elif season == "Soft Summer":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "analogous", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "triadic", num_colors=10))
-    elif season == "Soft Autumn":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "analogous", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "triadic", num_colors=10))
-    elif season == "True Autumn":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "analogous", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "triadic", num_colors=10))
-    elif season == "Deep Autumn":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "complementary", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "triadic", num_colors=10))
-    elif season == "Deep Winter":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "complementary", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "triadic", num_colors=10))
-    elif season == "True Winter":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "triadic", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "analogous", num_colors=10))
-    elif season == "Cool Winter":
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "analogous", num_colors=10))
-        palettes.extend(generate_palette_from_wheel(skin_tone_rgb, "complementary", num_colors=10))
+    return palette
 
-    return list(dict.fromkeys(palettes))  # Remove duplicates while preserving order
 
-# Function to display makeup recommendations
-def display_makeup_recommendations(skin_tone_name, detected_rgb):
-    """Display makeup recommendations based on detected skin tone."""
-    if skin_tone_name is not None:
-        # Get makeup recommendations from the dataset based on the closest match
-        recommendations = makeup_df.copy()
-        recommendations['RGB_Value'] = recommendations['RGB_Value'].apply(lambda x: eval(x) if isinstance(x, str) else x)
-        recommendations['Color_Diff'] = recommendations['RGB_Value'].apply(lambda x: color_difference(x, detected_rgb))
-        sorted_recommendations = recommendations.sort_values(by='Color_Diff').head(5)  # Get top 5 closest matches
-        
-        if not sorted_recommendations.empty:
-            st.write("### Makeup Recommendations")
-            for _, row in sorted_recommendations.iterrows():
-                st.write(f"**Product Type**: {row['Product_Type']}")
-                st.write(f"**Product Shade Name**: {row['Product_Shade_Name']}")
-                st.write(f"**Undertone**: {row['Undertone']}")
-                st.write(f"**RGB Value**: {row['RGB_Value']}")
-                color_rgb = row['RGB_Value']
-                st.markdown(
-                    f"<div class='color-box' style='background-color: rgb({color_rgb[0]}, {color_rgb[1]}, {color_rgb[2]}); width: 50px; height: 50px; display: inline-block; margin: 5px;'></div>",
-                    unsafe_allow_html=True
-                )
-        else:
-            st.write("No makeup recommendations available for the closest match found.")
-    else:
-        st.write("Skin tone could not be detected accurately.")
+def recommend_makeup(detected_rgb, category, limit):
+    """Recommend makeup shades based on detected skin tone."""
+    category_data = makeup_data[makeup_data['Product_Category'] == category]
+    distances = euclidean_distances([detected_rgb], category_data[['R', 'G', 'B']])
+    category_data['Distance'] = distances.flatten()
+    recommended_shades = category_data.sort_values(by="Distance").drop_duplicates(
+        subset=['R', 'G', 'B']
+    ).head(limit)
+    return recommended_shades
 
-# Streamlit app
-st.title("Automatic Skin Tone Detection and Color Recommendations")
-st.write("Capture a photo or upload one to detect your skin tone and get personalized color recommendations.")
 
-# Camera Input or File Upload
+# Streamlit App UI
+st.set_page_config(page_title="Skin Tone and Color Recommendations", layout="wide")
+st.title("Skin Tone and Color Recommendations")
+
+# File upload or camera input
 image_file = st.file_uploader("Upload an image")
 if not image_file:
     image_file = st.camera_input("Or take a picture")
@@ -194,40 +116,95 @@ if image_file:
     image = cv2.imdecode(file_bytes, 1)
 
     # Detect skin tone
-    skin_tone_name, skin_tone_rgb = detect_skin_tone(image)
+    detected_rgb = detect_skin_tone_with_landmarks(image)
+    if detected_rgb is not None:
+        detected_rgb = detected_rgb.tolist()
+        closest_tone, confidence = find_closest_skin_tone(detected_rgb)
 
-    if skin_tone_rgb is not None:
-        # Display detected skin tone
-        st.markdown(f"### Detected Skin Tone: {skin_tone_name} (RGB: {skin_tone_rgb})")
-        st.markdown(
-            f"<div class='color-box' style='background-color: rgb({skin_tone_rgb[0]}, {skin_tone_rgb[1]}, {skin_tone_rgb[2]}); width: 50px; height: 50px; display: inline-block; margin: 5px;'></div>",
-            unsafe_allow_html=True
-        )
+        # Tabbed Interface
+        tab1, tab2, tab3 = st.tabs(["Skin Tone", "Seasonal Colors", "Makeup Recommendations"])
 
-        # Dropdown for season selection
-        season = st.selectbox("\U0001F308 Select a season for recommended palettes:", [
-            "Light Spring", "True Spring", "Warm Spring",
-            "Light Summer", "True Summer", "Soft Summer",
-            "Soft Autumn", "True Autumn", "Deep Autumn",
-            "Deep Winter", "True Winter", "Cool Winter"
-        ])
-
-        # Display seasonal palettes
-        st.subheader(f"\U0001F3A8 Recommended Seasonal Palette for {season}")
-        seasonal_palette = get_seasonal_palette(skin_tone_rgb, season)
-        st.markdown("<div class='palette-container'>", unsafe_allow_html=True)
-        for color in seasonal_palette:
-            color_style = f"rgb({color[0]}, {color[1]}, {color[2]})"
+        with tab1:
+            st.write(f"### Detected Skin Tone: {closest_tone['Skin_Tone_Name']} (Category: {closest_tone['Category']})")
+            st.write(f"### Confidence: {confidence}%")
             st.markdown(
-                f"<div class='color-box' style='background-color: {color_style}; width: 50px; height: 50px; display: inline-block; margin: 5px;'></div>",
-                unsafe_allow_html=True
+                f"""
+                <div style="width: 100px; height: 100px; background-color: {closest_tone['Hex_Value']}; border-radius: 50%; margin: 20px auto;"></div>
+                """,
+                unsafe_allow_html=True,
             )
-        st.markdown("</div>", unsafe_allow_html=True)
 
-        # Display makeup recommendations
-        st.subheader("\U0001F484 Personalized Makeup Recommendations")
-        display_makeup_recommendations(skin_tone_name, skin_tone_rgb)
+        with tab2:
+            st.subheader("Seasonal Color Recommendations")
+
+            # Dropdown for season selection
+            selected_season = st.selectbox(
+                "Select a Season:",
+                list(seasonal_palette_rules.keys())
+            )
+
+            # Display selected season's palette
+            if selected_season:
+                st.write(f"### {selected_season} Palette")
+                rules = seasonal_palette_rules[selected_season]
+                seasonal_palette = generate_diverse_palette(
+                    [closest_tone['R'], closest_tone['G'], closest_tone['B']], rules, num_colors=10
+                )
+                for color in seasonal_palette:
+                    hex_color = f"#{int(color[0]):02x}{int(color[1]):02x}{int(color[2]):02x}".upper()
+                    st.markdown(
+                        f"""
+                        <div style="display: inline-block; width: 50px; height: 50px; background-color: {hex_color}; border-radius: 50%; margin: 5px;"></div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+        with tab3:
+            st.subheader("Makeup Recommendations")
+
+            # Foundation Recommendations
+            st.write("### Foundation Shades")
+            foundation_recommendations = recommend_makeup(detected_rgb, "Foundation Shade", 4)
+            for _, row in foundation_recommendations.iterrows():
+                st.markdown(
+                    f"""
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="width: 50px; height: 50px; background-color: {row['Hex_Value']}; border-radius: 50%; margin-right: 10px;"></div>
+                        <span style="font-size: 16px;">{row['Product_Name']}</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+            # Blush Recommendations
+            st.write("### Blush Shades")
+            blush_recommendations = recommend_makeup(detected_rgb, "Blush Shade", 3)
+            for _, row in blush_recommendations.iterrows():
+                st.markdown(
+                    f"""
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="width: 50px; height: 50px; background-color: {row['Hex_Value']}; border-radius: 50%; margin-right: 10px;"></div>
+                        <span style="font-size: 16px;">{row['Product_Name']}</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+            # Lipstick Recommendations
+            st.write("### Lipstick Shades")
+            lipstick_recommendations = recommend_makeup(detected_rgb, "Lipstick Shade", 5)
+            for _, row in lipstick_recommendations.iterrows():
+                st.markdown(
+                    f"""
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="width: 50px; height: 50px; background-color: {row['Hex_Value']}; border-radius: 50%; margin-right: 10px;"></div>
+                        <span style="font-size: 16px;">{row['Product_Name']}</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
     else:
-        st.error("Could not detect a face or skin tone. Please try again.")
+        st.error("Skin tone could not be detected. Please try with another image.")
 else:
-    st.info("\U0001F4F7 Please upload or capture an image to start.")
+    st.info("Please upload or capture an image to start.")
