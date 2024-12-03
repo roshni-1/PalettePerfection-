@@ -53,7 +53,7 @@ pip install -r requirements.txt
 
 ## Screenshots
 ![Skin Tone Detection](screenshot1.png)
-![Seasonal Color Palette](![image](https://github.com/user-attachments/assets/3d0ff8bc-ef8f-4233-9b01-d4b11c57253f))
+![Seasonal Color Palette]![image](https://github.com/user-attachments/assets/3d0ff8bc-ef8f-4233-9b01-d4b11c57253f)
 ![Makeup Suggestions](screenshot3.png)
 
 ## Future Enhancements
