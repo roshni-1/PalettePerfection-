@@ -1,0 +1,75 @@
+Product_Category,Product_Name,RGB_Value,Hex_Value
+Foundation Shade,Classic Beige,"216, 166, 131",#D8A683
+Foundation Shade,Desert Beige,"205, 160, 95",#CDA05F
+Foundation Shade,Amber Beige,"199, 150, 107",#C7966B
+Foundation Shade,Caramel,"191, 143, 95)",#BF8F5F
+Foundation Shade,Toffee,"177, 126, 81",#B17E51
+Foundation Shade,Soft Beige,"229, 184, 143",#E5B88F
+Foundation Shade,Buff Beige,"190, 144, 95",#BE905F
+Foundation Shade,Golden Beige,"214, 176, 114",#D6B072
+Foundation Shade,Cream Beige,"187, 153, 108",#BB996C
+Foundation Shade,Procelain,"210, 190, 165",#D2BEA5
+Foundation Shade,Shell Ivory,"212, 182, 156",#D4B69C
+Foundation Shade,Soft Ivory,"229, 204, 182",#E5CCB6
+Foundation Shade,Nude Ivory,"227, 207, 183",#E3CFB7
+Foundation Shade,Rose Ivory,"223, 195, 183",#DFC3B7
+Foundation Shade,Pecan,"172, 120, 83",#AC7853
+Foundation Shade,Fawn,"209, 147, 96",#D19360
+Foundation Shade,Light Medium,"233, 197, 175",#E9C5AF
+Foundation Shade,Tan,"228, 191, 172",#E4BFAC
+Foundation Shade,Light,"202, 158, 121",#CA9E79
+Foundation Shade,Medium,"201, 151, 114",#C99772
+Foundation Shade,Medium Deep,"201, 136, 106",#C9886A
+Foundation Shade,Deep,"164, 114, 89",#A47259
+Foundation Shade,Cinnamon,"137, 91, 57",#895B39
+Foundation Shade,Vanilla,"238, 186, 136",#EEBA88
+Foundation Shade,Golden Tan,"175, 109, 74",#AF6D4A
+Foundation Shade,Deep Caramel,"164, 105, 73",#A46949
+Foundation Shade,Beige Chiffon,"221, 169, 111",#DDA96F
+Foundation Shade,Truffle,"103, 66, 47",#67422F
+Foundation Shade,Suede,"180, 134, 101",#B48665
+Lipstick Shade,Nudist,"177, 104, 87",#B16857
+Lipstick Shade,Milk Tea,"175, 102, 70",#AF6646
+Lipstick Shade,Baby Spice,"179, 103, 90",#B3675A
+Lipstick Shade,Milkshake,"188, 103, 96",#BC6760
+Lipstick Shade,Vacay,"188, 97, 76",#BC614C
+Lipstick Shade,Baked,"180, 93, 65",#B45D41
+Lipstick Shade,Casual,"144, 68, 42",#90442A
+Lipstick Shade,On Repeat,"174, 100, 87",#AE6457
+Lipstick Shade,Girlcrush,"180, 83, 77",#B4534D
+Lipstick Shade,Birthday,"178, 110, 99",#B26E63
+Lipstick Shade,Brunette,"147, 74, 57",#934A39
+Lipstick Shade,Love,"160, 75, 78",#A04B4E
+Lipstick Shade,Mood,"149, 85, 85",#955555
+Lipstick Shade,Hot Sauce,"175, 64, 47",#AF402F
+Lipstick Shade,Mojo,"127, 28, 23",#7F1C17
+Lipstick Shade,Tea Rose,"170, 68, 64",#AA4440
+Lipstick Shade,Tease,"238, 138, 138",#EE8A8A
+Lipstick Shade,Nearly Nude,"234, 154, 155",#EA9A9B
+Lipstick Shade,Lights Out,"179, 108, 112",#B36C70
+Lipstick Shade,Natural Coco,"153, 87, 71",#995747
+Lipstick Shade,Perfection,"179, 92, 100",#B35C64
+Lipstick Shade,Espresso,"126, 56, 48",#7E3830
+Lipstick Shade,Magnetic,"166, 60, 74",#A63C4A
+Lipstick Shade,Hazel,"157, 73, 63",#9D493F
+Lipstick Shade,Perfectly Plum,"132, 31, 87",#841F57
+Lipstick Shade,Daring coral,"250, 83, 65",#FA5341
+Lipstick Shade,Petal Pink,"241, 124, 150",#F17C96
+Lipstick Shade,Statement Red,"170, 20, 29",#AA141D
+Lipstick Shade,Legendary Red,"211, 7, 42",#D3072A
+Lipstick Shade,Cherry Blaze,"111, 25, 34",#6F1922
+Lipstick Shade,Rich Merlot,"131, 18, 24",#831218
+Lipstick Shade,Berry Empowered,"136, 25, 57",#881939
+Lipstick Shade,Virtuous Rose,"204, 90, 100",#CC5A64
+Blush Shade,Light Pink,"254, 191, 202",#FEBFCA
+Blush Shade,Light Peach,"236, 169, 153",#ECA999
+Blush Shade,Sheer Rose,"238, 167, 173",#EEA7AD
+Blush Shade,Peach,"234, 148, 133",#EA9485
+Blush Shade,Rose,"215, 122, 132",#D77A84
+Blush Shade,Tawny Rose,"185, 110, 104",#B96E68
+Blush Shade,Mauve,"165, 105, 105",#A56969
+Blush Shade,Deep Pink,"229, 115, 151",#E57397
+Blush Shade,Peach2,"234, 143, 124",#EA8F7C
+Blush Shade,Brick Red,"193, 66, 49",#C14231
+Blush Shade,Berry,"177, 34, 90",#B1225A
+Blush Shade,Crimson,"221, 21, 60",#DD153C
