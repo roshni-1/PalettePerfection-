@@ -51,15 +51,9 @@ pip install -r requirements.txt
 - `skintonedetailed.xlsx`: Contains skin tone names, RGB values, HEX values, and categories.
 - `makeupdetailed.csv`: Contains makeup product details, including RGB values and HEX codes for foundation, blush, and lipstick.
 
-## Screenshots
-**Skin Tone Detection**
-![image](https://github.com/user-attachments/assets/8a588f42-0814-4aa4-b1a8-f99865bd5fef)
+## Application
 
-**Seasonal Color Palette**
-![image](https://github.com/user-attachments/assets/3d0ff8bc-ef8f-4233-9b01-d4b11c57253f)
-
-**Makeup Suggestions** 
-![image](https://github.com/user-attachments/assets/b2b5272d-825a-4d7f-b745-608aa379cd4c)
+https://github.com/user-attachments/assets/76ed82cc-c017-4521-99a3-89f699b7f4dc
 
 ## Future Enhancements
 - Adding event-based color recommendations.
@@ -74,6 +68,5 @@ pip install -r requirements.txt
 
 
 
-https://github.com/user-attachments/assets/76ed82cc-c017-4521-99a3-89f699b7f4dc
 
 
