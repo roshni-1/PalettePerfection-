@@ -71,6 +71,6 @@ pip install -r requirements.txt
 - **Streamlit**: For creating an interactive web application.
 - **Color Theory Resources**: For guiding seasonal palette generation.
 
-  ![Video](https://raw.github.com/roshni-1/PalettePerfection-/blob/main/streamlit-app-2024-12-04-01-12-33.mp4)
+  ![Video](https://github.com/roshni-1/PalettePerfection-/blob/main/streamlit-app-2024-12-04-01-12-33.mp4)
 
 
