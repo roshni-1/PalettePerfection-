@@ -61,8 +61,6 @@ pip install -r requirements.txt
 **Makeup Suggestions** 
 ![image](https://github.com/user-attachments/assets/b2b5272d-825a-4d7f-b745-608aa379cd4c)
 
-https://github.com/roshni-1/PalettePerfection-/blob/main/streamlit-app-2024-12-04-01-12-33.mp4
-
 ## Future Enhancements
 - Adding event-based color recommendations.
 - Include additional makeup categories and product filters.
@@ -72,5 +70,7 @@ https://github.com/roshni-1/PalettePerfection-/blob/main/streamlit-app-2024-12-0
 - **Mediapipe**: For facial landmark detection.
 - **Streamlit**: For creating an interactive web application.
 - **Color Theory Resources**: For guiding seasonal palette generation.
+
+   https://github.com/roshni-1/PalettePerfection-/blob/main/streamlit-app-2024-12-04-01-12-33.mp4
 
 
