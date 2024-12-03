@@ -52,17 +52,20 @@ pip install -r requirements.txt
 - `makeupdetailed.csv`: Contains makeup product details, including RGB values and HEX codes for foundation, blush, and lipstick.
 
 ## Screenshots
-![Skin Tone Detection](screenshot1.png)
-![Seasonal Color Palette]![image](https://github.com/user-attachments/assets/3d0ff8bc-ef8f-4233-9b01-d4b11c57253f)
-![Makeup Suggestions](screenshot3.png)
+**Skin Tone Detection**
+![image](https://github.com/user-attachments/assets/8a588f42-0814-4aa4-b1a8-f99865bd5fef)
+
+**Seasonal Color Palette**
+![image](https://github.com/user-attachments/assets/3d0ff8bc-ef8f-4233-9b01-d4b11c57253f)
+
+**Makeup Suggestions** 
+![image](https://github.com/user-attachments/assets/b2b5272d-825a-4d7f-b745-608aa379cd4c)
+
 
 ## Future Enhancements
-- Add event-based color recommendations.
-- Integrate real-time camera processing for skin tone detection.
+- Adding event-based color recommendations.
 - Include additional makeup categories and product filters.
-
-## License
-This project is licensed under the MIT License. Feel free to use and modify it.
+- AR-Based Virtual Try-On.
 
 ## Acknowledgments
 - **Mediapipe**: For facial landmark detection.
