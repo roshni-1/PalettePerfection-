@@ -1,62 +1,72 @@
-# Overview of the Skin Tone Detection and Color Recommendations Project
 
-### Project Summary
-This project aims to create a user-friendly application that detects the user's skin tone and provides personalized recommendations for makeup and clothing colors. The application uses machine learning, color theory, and advanced image processing techniques to ensure accurate color suggestions, tailored for different skin tones and seasonal preferences.. 
+# Skin Tone and Color Recommendations App
 
-### Features Implemented
+This application detects a user's skin tone from an uploaded image, recommends seasonal color palettes, and provides personalized makeup suggestions based on their skin tone.
+
+## Features
 1. **Skin Tone Detection**:
-   - The application allows users to either upload an image or capture a real-time picture using their webcam.
-   - A Haar Cascade model is used to detect the user's face, and K-means clustering is used to extract the dominant skin tone from the facial region. The brightest skin tone is selected as the representative skin tone.
+   - Uses Mediapipe to detect facial landmarks and analyze the skin tone.
+   - Matches the detected tone with a predefined dataset of skin tones.
 
-2. **Clothing Color Recommendations**:
-   - Based on the user's skin tone, a set of clothing colors is recommended.
-   - The user can also select the ongoing season (Spring, Summer, Autumn, Winter), and the clothing colors are adjusted based on seasonal preferences.
-   - Recommendations include a variety of color theory-based suggestions: complementary, analogous, and triadic colors.
+2. **Seasonal Color Recommendations**:
+   - Generates diverse and unique color palettes for each season (Spring, Summer, Autumn, Winter).
+   - Displays color swatches with HEX values in a grid layout.
 
-3. **Makeup Color Recommendations**:
-   - The application provides makeup recommendations for foundation, blush, lipstick, and eyeshadow.
-   - Foundation shades are suggested as the closest match along with slightly lighter and darker variations.
-   - Blush, lipstick, and eyeshadow colors are suggested based on warm, cool, or neutral undertones.
+3. **Makeup Suggestions**:
+   - Recommends foundation, blush, and lipstick shades that match the detected skin tone.
+   - Optionally displays makeup recommendations based on user input.
 
-4. **Color Visualization**:
-   - Recommended colors are displayed as visual color swatches instead of numeric RGB values, making it easier for users to visualize the suggestions.
+4. **User-Friendly Interface**:
+   - Interactive tabs for skin tone, seasonal colors, and makeup suggestions.
+   - Clean and responsive design using Streamlit.
 
-### Technical Approach
-- **Image Processing**:
-  - OpenCV is used for image preprocessing, including face detection and color conversion to HSV (hue, saturation, value) space.
-  - K-means clustering is applied to extract dominant colors from the face region.
+## Requirements
+To run this application, install the required dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-- **Seasonal Recommendations**:
-  - The user selects the current season, and the application provides season-appropriate clothing colors.
-  - Predefined seasonal colors are used for Spring, Summer, Autumn, and Winter, making the clothing recommendations more contextually relevant.
+## How to Use
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/roshni-1/PalettePerfection-app.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd skin-tone-recommendation-app
+   ```
+3. Run the application:
+   ```bash
+   streamlit run app.py
+   ```
+4. Upload an image or use the camera input to detect your skin tone.
 
-- **Streamlit Interface**:
-  - The application uses Streamlit to create an interactive web interface where users can upload images, take real-time photos, and view color recommendations.
-  - Users can easily interact with the tool to obtain tailored color suggestions.
+## File Structure
+- **app.py**: Main application file.
+- **requirements.txt**: List of required Python libraries.
+- **skintonedetailed.xlsx**: Dataset containing detailed skin tone information.
+- **makeupdetailed.csv**: Dataset containing makeup product details.
 
-### Current Challenges
-- **Accuracy of Skin Tone Detection**: The use of Haar Cascade and basic K-means clustering provides moderate accuracy but may need further refinement for better skin tone classification.
-- **Makeup Recommendations Consistency**: The lipstick and foundation colors sometimes produce incorrect recommendations, such as dark shades for foundation or unusual shades for lipstick.
+## Datasets
+- `skintonedetailed.xlsx`: Contains skin tone names, RGB values, HEX values, and categories.
+- `makeupdetailed.csv`: Contains makeup product details, including RGB values and HEX codes for foundation, blush, and lipstick.
 
-### Next Steps for Enhancement
-- **Improve Skin Tone Detection**: Implement a deep learning model for more accurate face and skin tone detection.
-- **Seasonal Recommendations Based on User Data**: Instead of static recommendations, provide more dynamic and personalized suggestions.
-- **Interactive User Feedback**: Add a feedback system where users can provide input on the accuracy of the recommendations, which can be used to improve the model.
+## Screenshots
+![Skin Tone Detection](screenshot1.png)
+![Seasonal Color Palette](![image](https://github.com/user-attachments/assets/3d0ff8bc-ef8f-4233-9b01-d4b11c57253f))
+![Makeup Suggestions](screenshot3.png)
 
-![image](https://github.com/user-attachments/assets/519344df-30ad-4c26-8b8f-0fc9aad13f23)
+## Future Enhancements
+- Add event-based color recommendations.
+- Integrate real-time camera processing for skin tone detection.
+- Include additional makeup categories and product filters.
 
-![image](https://github.com/user-attachments/assets/ac00fe8e-fe32-447e-a0b2-6fb0f9844c6e)  
-![image](https://github.com/user-attachments/assets/67a4b3c4-ef2e-420c-a800-4b5171378909)
-![image](https://github.com/user-attachments/assets/5a8f2f03-4f36-42f0-ba78-505219bcff90)
+## License
+This project is licensed under the MIT License. Feel free to use and modify it.
 
+## Acknowledgments
+- **Mediapipe**: For facial landmark detection.
+- **Streamlit**: For creating an interactive web application.
+- **Color Theory Resources**: For guiding seasonal palette generation.
 
-![image](https://github.com/user-attachments/assets/ed588b2a-c8f2-40ac-be39-61fc69dbdeb4)
-![image](https://github.com/user-attachments/assets/253dd7a0-4c2b-4783-8515-717327ec04c2)
-![image](https://github.com/user-attachments/assets/48f92a82-1aa4-4940-831f-8978dc5a1c6b)
-
-
-
-- **Virtual Try-On**: Implement an AR-based feature for users to virtually try on clothing and makeup colors.
-
-This project is intended to provide accessible solution for users to find personalized fashion and makeup color suggestions. It combines machine learning, image processing, and color theory to make the process intuitive and engaging.
 
