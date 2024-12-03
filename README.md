@@ -61,6 +61,8 @@ pip install -r requirements.txt
 **Makeup Suggestions** 
 ![image](https://github.com/user-attachments/assets/b2b5272d-825a-4d7f-b745-608aa379cd4c)
 
+![image](https://github.com/roshni-1/PalettePerfection-/blob/main/streamlit-app-2024-12-04-01-12-33.webm)
+
 
 ## Future Enhancements
 - Adding event-based color recommendations.
