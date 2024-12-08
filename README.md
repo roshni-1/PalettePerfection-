@@ -62,7 +62,7 @@ https://github.com/user-attachments/assets/76ed82cc-c017-4521-99a3-89f699b7f4dc
 
 ## Acknowledgments
 - **Mediapipe**: For facial landmark detection.
-- **Streamlit**: For creating an interactive web application.
+- **Streamlit**: For creating an interactive web application with attractive UI
 - **Color Theory Resources**: For guiding seasonal palette generation.
 
 
