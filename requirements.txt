@@ -5,4 +5,4 @@ pandas
 scikit-learn
 streamlit
 openpyxl
-cv2
+
